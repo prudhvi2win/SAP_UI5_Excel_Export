@@ -1,0 +1,55 @@
+<mvc:View controllerName="com.practice.northwind.controller.View2"
+    xmlns:mvc="sap.ui.core.mvc" xmlns:fb="sap.ui.comp.filterbar"
+    xmlns="sap.m" xmlns:f="sap.ui.layout.form">
+    <Page id="page2" title="Product Specification Sheet" showNavButton="true" navButtonPress=".onNavBack" class="sapUiResponsiveContentPadding">
+        <content >
+            <ObjectHeader
+                id="idObjectHeader"
+                title="{ProductName}"
+                number="{UnitPrice}"
+                numberUnit="USD">
+                <attributes>
+                    <ObjectAttribute text="Category: {Category/CategoryName}" />
+                    <ObjectAttribute text="Supplier: {Supplier/CompanyName}" />
+                </attributes>
+            </ObjectHeader>
+
+            <f:SimpleForm id="idSimpleForm" title="Warehouse Logistics" editable="false" layout="ResponsiveGridLayout">
+                <f:content>
+                    <Label text="Quantity Per Unit" />
+                    <Text text="{QuantityPerUnit}" />
+                    
+                    <Label text="Units In Stock" />
+                    <Text text="{UnitsInStock} cases" />
+
+                    <Label text="Units On Order" />
+                    <Text text="{UnitsOnOrder} cases" />
+                    
+                    <Label text="Reorder Level" />
+                    <Text text="{ReorderLevel}" />
+                </f:content>
+            </f:SimpleForm>
+            <Table id="idOrderDetailsTable" 
+                   items="{Order_Details}" 
+                   headerText="Associated Customer Order Log"
+                   noDataText="No orders placed for this item yet.">
+                <columns>
+                    <Column><Text text="Order ID" /></Column>
+                    <Column><Text text="Unit Price Paid" /></Column>
+                    <Column><Text text="Quantity Ordered" /></Column>
+                    <Column><Text text="Applied Discount" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{OrderID}" />
+                            <Text text="{UnitPrice} USD" />
+                            <Text text="{Quantity}" />
+                            <Text text="{= ${Discount} * 100 }% " />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

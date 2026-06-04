@@ -1,0 +1,106 @@
+<mvc:View controllerName="com.practice.northwind.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc" xmlns:fb="sap.ui.comp.filterbar"
+    xmlns="sap.m">
+    <Page id="page" title="{i18n>title}" class="sapUiResponsiveContentPadding">
+    <headerContent>
+        <Button id="idAddProductBtn" icon="sap-icon://add" text="New Product" press=".onOpenCreateDialog" />
+    </headerContent>
+        <content>
+            <fb:FilterBar id="idFilterBar" 
+                          useToolbar="false" 
+                          search=".onSearch">
+                <fb:filterGroupItems>
+                    <fb:FilterGroupItem name="ProductName" 
+                                        label="Product Name" 
+                                        groupName="Group1" 
+                                        visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="idSearchName" placeholder="Search product name..." />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="Category" 
+                                        label="Category" 
+                                        groupName="Group1" 
+                                        visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="idCategory" placeholder="Search category..." />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="Supplier" 
+                                        label="Supplier" 
+                                        groupName="Group1" 
+                                        visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="idSupplier" placeholder="Search supplier..." />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                </fb:filterGroupItems>
+            </fb:FilterBar>
+            <Table id="idProductTable" 
+                items="{path:'/Products',
+                        parameters: {expand: 'Category, Supplier'}}" 
+                mode="SingleSelectMaster" 
+                selectionChange=".onRowSelect"
+                growing="true" 
+                growingThreshold="20" 
+                growingScrollToLoad="true"
+                 >
+            <headerToolbar>
+                <OverflowToolbar id="idTableToolbar">
+                    <Title text="Live Product Inventory Master" level="H2"/>
+                    <ToolbarSpacer />
+                    <Button id="idExportBtn" 
+                            icon="sap-icon://excel-attachment" 
+                            text="Export to Excel" 
+                            type="Transparent"
+                            press=".onExportToExcel" />
+                </OverflowToolbar>
+            </headerToolbar>
+                <columns>
+                    <Column>
+                        <header>
+                            <Text text="Product ID" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Product Name" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Category" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Supplier" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Unit Price" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Units In Stock" />
+                        </header>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells>
+                            <Text text="{ProductID}" />
+                            <Text text="{ProductName}" />
+                            <Text text="{Category/CategoryName}" />
+                            <Text text="{Supplier/CompanyName} ( {Supplier/SupplierID} )" />
+                            <Text text="{UnitPrice} USD" />
+                            <Text text="{UnitsInStock}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
