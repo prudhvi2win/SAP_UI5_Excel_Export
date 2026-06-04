@@ -148,7 +148,86 @@ To enable export, `manifest.json` must declare the dependency:
     }
   }
 }
+## 🔍 Search & Filter
 
+The toolbar provides **3 independent filter fields** that work together using AND logic —
+only records matching all filled conditions are shown.
+
+### Filter Fields
+
+| Field | Filters On | OData Property |
+|---|---|---|
+| Product Name | Product name (contains) | `ProductName` |
+| Category | Category name (contains) | `Category/CategoryName` |
+| Supplier | Supplier company name (contains) | `Supplier/CompanyName` |
+
+### Step-by-step Explanation
+
+**1. Read input values**
+```javascript
+var sProductQuery  = this.byId("idSearchName").getValue();
+var sCategoryQuery = this.byId("idCategory").getValue();
+var sSupplierQuery = this.byId("idSupplier").getValue();
+```
+Each field is read independently. Empty fields are simply ignored in the next step.
+
+---
+
+**2. Build filters array conditionally**
+```javascript
+var aFilters = [];
+
+if (sProductQuery) {
+    aFilters.push(new Filter("ProductName", FilterOperator.Contains, sProductQuery));
+}
+```
+- Only non-empty fields contribute a `Filter` object
+- `FilterOperator.Contains` → translates to OData `$filter=substringof('query', ProductName)`
+- If all 3 fields are empty → `aFilters` stays `[]`
+
+---
+
+**3. Combine filters with AND logic**
+```javascript
+oBinding.filter(
+    new Filter({ filters: aFilters, and: true })
+);
+```
+- `and: true` → ALL conditions must match (not just any one)
+- Example: searching `Chai` + `Beverages` returns only products named *Chai* in *Beverages* category
+- If `and: false` (OR) → any one match would be enough
+
+---
+
+**4. Clear filters when all fields are empty**
+```javascript
+} else {
+    oBinding.filter([]);  // resets to full unfiltered dataset
+}
+```
+Passing an empty array removes all active filters and restores the full product list.
+
+---
+
+**5. Expanded nav properties in filters**
+```javascript
+new Filter("Category/CategoryName", FilterOperator.Contains, sCategoryQuery)
+new Filter("Supplier/CompanyName",  FilterOperator.Contains, sSupplierQuery)
+```
+These work because the table binding already declares:
+```javascript
+parameters: { expand: 'Category, Supplier' }
+```
+Without `expand`, filtering on `Category/CategoryName` would fail silently.
+
+---
 ## 📝 License
 
 MIT
+
+<img width="1361" height="635" alt="image" src="https://github.com/user-attachments/assets/f2b01647-c0ef-42f8-b1f5-e164fcd38a3c" />
+<img width="559" height="262" alt="image" src="https://github.com/user-attachments/assets/63f3ae48-1360-47d1-87c5-f661d45c14da" />
+<img width="1107" height="667" alt="image" src="https://github.com/user-attachments/assets/24bbcad8-a9a8-4a87-b4a4-b0fb6ab2a407" />
+
+
+
