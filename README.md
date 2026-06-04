@@ -148,6 +148,8 @@ To enable export, `manifest.json` must declare the dependency:
     }
   }
 }
+```
+
 ## 🔍 Search & Filter
 
 The toolbar provides **3 independent filter fields** that work together using AND logic —
