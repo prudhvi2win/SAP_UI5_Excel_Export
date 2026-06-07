@@ -1,6 +1,6 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
-    "../model/formatter",
+    "com/practice/northwind/model/formatter",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
     "sap/m/MessageToast",
@@ -9,20 +9,41 @@ sap.ui.define([
     "sap/ui/export/Spreadsheet",
     "sap/m/MessageBox",
     "sap/ui/export/library",
-    "sap/ui/export/EdmType"
+    "sap/ui/export/EdmType",
 ], (Controller, formatter, Filter, FilterOperator, messageToast, 
     Fragment, JSONModel, Spreadsheet, MessageBox, exportLibrary, EdmType) => {
     "use strict";
 
     return Controller.extend("com.practice.northwind.controller.View1", {
-        formatter: formatter,
+        f: formatter,
         onInit() {
+            // Get OData Model 
+            var oModel = this.getOwnerComponent().getModel(); 
+            // Get JSON Model
+            var productModel = this.getOwnerComponent().getModel("productModel");
+
+            oModel.read("/Products", {
+                urlParameters: {
+                    "$expand": "Category,Supplier"
+                },
+                success: function (oData) {
+                        // console.log(oData.results);
+                        // Add serial number (SNo) to each product in the JSON model
+                        if (oData && Array.isArray(oData.results)) {
+                            oData.results.forEach(function (item, index) {
+                                item.SNo = index + 1;
+                            });
+                        }
+                        productModel.setData(oData);
+                }
+            });
         },
         // Triggered when user clicks "Go" on the FilterBar
         onSearch: function () {
             var sProductQuery = this.byId("idSearchName").getValue();
             var sCategoryQuery = this.byId("idCategory").getValue();
             var sSupplierQuery = this.byId("idSupplier").getValue();
+            var sDiscontinuedQuery = this.byId("idDiscontinued").getSelectedKey();
             var aFilters = [];
 
             if (sProductQuery) {
@@ -35,6 +56,10 @@ sap.ui.define([
 
             if (sSupplierQuery) {
                 aFilters.push(new Filter("Supplier/CompanyName", FilterOperator.Contains, sSupplierQuery));
+            }
+
+            if (sDiscontinuedQuery) {
+                aFilters.push(new Filter("Discontinued", FilterOperator.EQ, sDiscontinuedQuery === "true"));
             }
 
             var oTable = this.byId("idProductTable");
@@ -54,11 +79,12 @@ sap.ui.define([
 
         // Triggered when a user clicks a row in the table
         onRowSelect: function (oEvent) {
-            var oSelectedItem = oEvent.getParameter("listItem");
-            var oContext = oSelectedItem.getBindingContext();
+            // var oSelectedItem = oEvent.getParameter("listItem");
+            // var oContext = oSelectedItem.getBindingContext();
+            // var sProductID = oContext.getProperty("ProductID");
+            var oContext = oEvent.getParameter("listItem").getBindingContext("productModel");
             var sProductID = oContext.getProperty("ProductID");
-
-            // Navigate to View2 and append the ProductID parameter to the URL route
+            
             var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("RouteView2", {
                 productID: sProductID

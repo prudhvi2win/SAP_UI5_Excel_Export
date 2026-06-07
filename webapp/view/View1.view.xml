@@ -1,5 +1,5 @@
 <mvc:View controllerName="com.practice.northwind.controller.View1"
-    xmlns:mvc="sap.ui.core.mvc" xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:mvc="sap.ui.core.mvc" xmlns:fb="sap.ui.comp.filterbar" xmlns:core="sap.ui.core"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}" class="sapUiResponsiveContentPadding">
     <headerContent>
@@ -23,7 +23,8 @@
                                         groupName="Group1" 
                                         visibleInFilterBar="true">
                         <fb:control>
-                            <Input id="idCategory" placeholder="Search category..." />
+                            <Input id="idCategory" 
+                                   placeholder="Search category..." />
                         </fb:control>
                     </fb:FilterGroupItem>
                     <fb:FilterGroupItem name="Supplier" 
@@ -34,17 +35,30 @@
                             <Input id="idSupplier" placeholder="Search supplier..." />
                         </fb:control>
                     </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="Discontinued" 
+                                        label="Discontinued" 
+                                        groupName="Group1" 
+                                        visibleInFilterBar="true">
+                        <fb:control>
+                            <Select id="idDiscontinued">
+                                <core:Item key="" text="" />
+                                <core:Item key="true" text="Yes" />
+                                <core:Item key="false" text="No" />
+                            </Select>
+                        </fb:control>
+                    </fb:FilterGroupItem>
                 </fb:filterGroupItems>
             </fb:FilterBar>
+            <ScrollContainer vertical="true" height="80vh" horizontal="true">
             <Table id="idProductTable" 
-                items="{path:'/Products',
+                items="{path:'productModel>/results',
                         parameters: {expand: 'Category, Supplier'}}" 
                 mode="SingleSelectMaster" 
                 selectionChange=".onRowSelect"
                 growing="true" 
                 growingThreshold="20" 
                 growingScrollToLoad="true"
-                 >
+                 >  
             <headerToolbar>
                 <OverflowToolbar id="idTableToolbar">
                     <Title text="Live Product Inventory Master" level="H2"/>
@@ -57,6 +71,11 @@
                 </OverflowToolbar>
             </headerToolbar>
                 <columns>
+                    <Column width="5rem">
+                        <header>
+                            <Text text="S No." />
+                        </header>
+                    </Column>
                     <Column>
                         <header>
                             <Text text="Product ID" />
@@ -84,23 +103,54 @@
                     </Column>
                     <Column>
                         <header>
+                            <Text text="GST" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
                             <Text text="Units In Stock" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="ReorderLevel" />
+                        </header>
+                    </Column>
+                    <Column>
+                        <header>
+                            <Text text="Discontinued" />
                         </header>
                     </Column>
                 </columns>
                 <items>
                     <ColumnListItem type="Navigation">
                         <cells>
-                            <Text text="{ProductID}" />
-                            <Text text="{ProductName}" />
-                            <Text text="{Category/CategoryName}" />
-                            <Text text="{Supplier/CompanyName} ( {Supplier/SupplierID} )" />
-                            <Text text="{UnitPrice} USD" />
-                            <Text text="{UnitsInStock}" />
+                            <Text text="{productModel>SNo}" />
+                            <Text text="{productModel>ProductID}" />
+                            <Text text="{productModel>ProductName}" />
+                            <Text text="{productModel>Category/CategoryName}" />
+                            <Text text="{productModel>Supplier/CompanyName} ( {productModel>Supplier/SupplierID} )" />
+                            <Text text="{productModel>UnitPrice} USD" />
+                            <!-- <Text text="{= ${productModel>Category/CategoryName} === 'Beverage' || ${productModel>Category/CategoryName} === 'Beverages' ? '18%' : '' }" /> -->
+                            <Text text="{
+                                path: 'productModel>Category/CategoryName',
+                                formatter: '.f.calculateGST'
+                            }" />
+                            <Text text="{productModel>UnitsInStock}" />
+                            <Text text="{productModel>ReorderLevel}" />
+                            <!-- <ToggleButton pressed="{productModel>Discontinued}"
+                                          enabled="true"
+                                          text="{= ${productModel>Discontinued} ? 'Yes' : 'No' }"
+                                          type="{= ${productModel>Discontinued} ? 'Reject' : 'Accept' }" /> -->
+                            <ObjectStatus text="{productModel>Discontinued}" inverted="true"
+                                        state="{path:'productModel>Discontinued', 
+                                        formatter: '.f.colorDiscontinued'}">
+                            </ObjectStatus>
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
+            </ScrollContainer>
         </content>
     </Page>
 </mvc:View>
