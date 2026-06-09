@@ -21,6 +21,14 @@ sap.ui.define([], function () {
             } else {
                 return "Success";
             }
+        },
+
+        toUpperCase: function (sValue) {
+            // Convert input string to uppercase
+            if (sValue === "true" || sValue === "false") {
+                return sValue.toUpperCase();
+            }
+            return sValue;
         }
     };
 });

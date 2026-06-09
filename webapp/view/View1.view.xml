@@ -142,9 +142,10 @@
                                           enabled="true"
                                           text="{= ${productModel>Discontinued} ? 'Yes' : 'No' }"
                                           type="{= ${productModel>Discontinued} ? 'Reject' : 'Accept' }" /> -->
-                            <ObjectStatus text="{productModel>Discontinued}" inverted="true"
-                                        state="{path:'productModel>Discontinued', 
-                                        formatter: '.f.colorDiscontinued'}">
+                            <ObjectStatus text="{= ${productModel>Discontinued} ? 'TRUE' : 'FALSE' }" 
+                                            inverted="true"
+                                            state="{path:'productModel>Discontinued', 
+                                                    formatter: '.f.colorDiscontinued'}">
                             </ObjectStatus>
                         </cells>
                     </ColumnListItem>
