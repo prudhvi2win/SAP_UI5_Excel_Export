@@ -3,7 +3,10 @@
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}" class="sapUiResponsiveContentPadding">
     <headerContent>
-        <Button id="idAddProductBtn" icon="sap-icon://add" text="New Product" press=".onOpenCreateDialog" />
+    <Button id="onOpenCreateDialog" 
+            icon="sap-icon://add-product" 
+            text="Add Product" 
+            press=".onOpenCreateDialog"/>
     </headerContent>
         <content>
             <fb:FilterBar id="idFilterBar" 
@@ -32,13 +35,16 @@
                                         groupName="Group1" 
                                         visibleInFilterBar="true">
                         <fb:control>
-                            <Input id="idSupplier" placeholder="Search supplier..." />
+                            <!-- <Input id="idSupplier" placeholder="Search supplier..." /> -->
+                            <MultiComboBox id="idSupplier" width="20%" items="{/Suppliers}">
+                                <core:Item key="{CompanyName}" text="{CompanyName}"></core:Item>
+                            </MultiComboBox>
                         </fb:control>
                     </fb:FilterGroupItem>
                     <fb:FilterGroupItem name="Discontinued" 
                                         label="Discontinued" 
                                         groupName="Group1" 
-                                        visibleInFilterBar="true">
+                                        visibleInFilterBar="false">
                         <fb:control>
                             <Select id="idDiscontinued">
                                 <core:Item key="" text="" />
@@ -68,6 +74,10 @@
                             text="Export to Excel" 
                             type="Transparent"
                             press=".onExportToExcel" />
+                    <Button id="idAddProductBtn" 
+                            icon="sap-icon://add-product" 
+                            text="Add Product" 
+                            press=".onAdd"/>
                 </OverflowToolbar>
             </headerToolbar>
                 <columns>

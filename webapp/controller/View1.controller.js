@@ -42,8 +42,9 @@ sap.ui.define([
         onSearch: function () {
             var sProductQuery = this.byId("idSearchName").getValue();
             var sCategoryQuery = this.byId("idCategory").getValue();
-            var sSupplierQuery = this.byId("idSupplier").getValue();
+            var aSupplierQuery = this.byId("idSupplier").getSelectedKeys();
             var sDiscontinuedQuery = this.byId("idDiscontinued").getSelectedKey();
+            // var oDateQuery = this.byId("idDatePicker").getDateValue();
             var aFilters = [];
 
             if (sProductQuery) {
@@ -54,13 +55,23 @@ sap.ui.define([
                 aFilters.push(new Filter("Category/CategoryName", FilterOperator.Contains, sCategoryQuery));
             }
 
-            if (sSupplierQuery) {
-                aFilters.push(new Filter("Supplier/CompanyName", FilterOperator.Contains, sSupplierQuery));
+            if (aSupplierQuery && aSupplierQuery.length > 0) {
+                var aSupplierFilters = aSupplierQuery.map(function (sSupplier) {
+                    return new Filter("Supplier/CompanyName", FilterOperator.EQ, sSupplier);
+                });
+                aFilters.push(new Filter({
+                    filters: aSupplierFilters,
+                    and: false
+                }));
             }
 
             if (sDiscontinuedQuery) {
                 aFilters.push(new Filter("Discontinued", FilterOperator.EQ, sDiscontinuedQuery === "true"));
             }
+
+            // if (oDateQuery) {
+            //     aFilters.push(new Filter("ReleaseDate", FilterOperator.EQ, oDateQuery));
+            // }
 
             var oTable = this.byId("idProductTable");
             var oBinding = oTable.getBinding("items");
@@ -233,6 +244,11 @@ sap.ui.define([
                     width: 15
                 }
             ];
+        },
+        onAdd: function(){
+            this.getOwnerComponent().getRouter().navTo("RouteView2", {
+                productID: "add"
+            });
         }
     });
 });

@@ -3,78 +3,9 @@
     xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:core="sap.ui.core">
     <Page id="page2" title="Product Specification Sheet" showNavButton="true" navButtonPress=".onNavBack" class="sapUiResponsiveContentPadding">
         <content >
-            <ObjectHeader
-                id="idObjectHeader"
-                title="{ProductName}"
-                number="{UnitPrice}"
-                numberUnit="USD">
-                <attributes>
-                    <ObjectAttribute text="Category: {Category/CategoryName}" />
-                    <ObjectAttribute text="Supplier: {Supplier/CompanyName}" />
-                </attributes>
-            </ObjectHeader>
-
-            <f:SimpleForm id="idSimpleForm" title="Warehouse Logistics" 
-                        editable="true" layout="ResponsiveGridLayout" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false">
-                <f:content>
-                    <Label text="Quantity Per Unit" />
-                    <Text text="{QuantityPerUnit}" />
-                    
-                    <Label text="Units In Stock" />
-                    <Text text="{UnitsInStock} cases" />
-
-                    <Label text="Units On Order" />
-                    <Text text="{UnitsOnOrder} cases" />
-                    
-                    <Label text="Reorder Level" />
-                    <Text text="{ReorderLevel}" />
-
-                    <Label text="Select Customer" />
-                    <MultiComboBox id="idCustomerSelect"
-                            change="onCustomerChange"
-                            width="50%"
-                            items="{/Customers}">
-                        <core:Item key="{CustomerID}" text="{CompanyName}" />
-                    </MultiComboBox>
-
-                    <Label text="Select Customer" />
-                    <Input id="idCustomerVH"
-                           showValueHelp="true"
-                           valueHelpRequest="onCustomerVHRequest"
-                            width="50%">    
-                    </Input>
-
-                    <Label text="Customer/Orders" />
-                    <RadioButtonGroup id="idCustGroup" selectedIndex="0" columns="2">
-                        <buttons>
-                            <RadioButton text="Orders" />
-                            <RadioButton text="Customers" />
-                        </buttons>
-                    </RadioButtonGroup>
-                </f:content>
-            </f:SimpleForm>
-                      
-            <Table id="idOrderDetailsTable" 
-                   items="{Order_Details}" 
-                   headerText="Associated Customer Order Log"
-                   noDataText="No orders placed for this item yet.">
-                <columns>
-                    <Column><Text text="Order ID" /></Column>
-                    <Column><Text text="Unit Price Paid" /></Column>
-                    <Column><Text text="Quantity Ordered" /></Column>
-                    <Column><Text text="Applied Discount" visible="false" /></Column>
-                </columns>
-                <items>
-                    <ColumnListItem>
-                        <cells>
-                            <Text text="{OrderID}" />
-                            <Text text="{UnitPrice} USD" />
-                            <Text text="{Quantity}" />
-                            <Text text="{= ${Discount} * 100 }% " visible="false"/>
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
+            <Panel id="idPanel">
+                
+            </Panel>
         </content>
     </Page>
 </mvc:View>
