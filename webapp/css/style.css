@@ -1,1 +1,59 @@
-/* Enter your custom styles here */
+/* 1. Hide the 3 dots */
+#container-com\.practice\.northwind---View1--idProductTable 
+.sapUiLocalBusyIndicator 
+.sapUiLocalBusyIndicatorAnimation {
+    display: none !important;
+}
+
+/* 2. Logo on the child busy indicator div */
+#container-com\.practice\.northwind---View1--idProductTable 
+.sapUiLocalBusyIndicator::after {
+    content: "";
+    display: block;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("../img/Applied_Materials_Logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: logoPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes logoPulse {
+    0%,  100% { opacity: 1;   transform: translate(-50%, -50%) scale(1);    }
+    50%        { opacity: 0.5; transform: translate(-50%, -50%) scale(0.88); }
+}
+
+/* 1. Hide the 3 dots */
+#container-com\.practice\.northwind---View2
+.sapUiLocalBusyIndicator 
+.sapUiLocalBusyIndicatorAnimation {
+    display: none !important;
+}
+
+/* 2. Logo on the child busy indicator div */
+#container-com\.practice\.northwind---View2
+.sapUiLocalBusyIndicator::after {
+    content: "";
+    display: block;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-image: url("../img/Applied_Materials_Logo.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    animation: logoPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes logoSpin {
+    from { transform: translate(-50%, -50%) rotate(0deg);   }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}

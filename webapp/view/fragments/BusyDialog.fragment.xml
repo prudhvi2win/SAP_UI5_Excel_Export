@@ -1,0 +1,27 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Dialog
+        showHeader="false"
+        draggable="false"
+        resizable="false"
+        contentWidth="200px"
+        contentHeight="150px">
+
+        <VBox
+            justifyContent="Center"
+            alignItems="Center"
+            height="100%">
+
+            <Image
+                src="../img/Applied_Materials_Logo.png"
+                width="120px"
+                class="logoBusy"/>
+
+            <Text text="Loading..." />
+        </VBox>
+
+    </Dialog>
+
+</core:FragmentDefinition>

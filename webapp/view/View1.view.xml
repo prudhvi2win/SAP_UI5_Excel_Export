@@ -2,12 +2,12 @@
     xmlns:mvc="sap.ui.core.mvc" xmlns:fb="sap.ui.comp.filterbar" xmlns:core="sap.ui.core"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}" class="sapUiResponsiveContentPadding">
-    <headerContent>
+    <!-- <headerContent>
     <Button id="onOpenCreateDialog" 
             icon="sap-icon://add-product" 
             text="Add Product" 
             press=".onOpenCreateDialog"/>
-    </headerContent>
+    </headerContent> -->
         <content>
             <fb:FilterBar id="idFilterBar" 
                           useToolbar="false" 
@@ -81,11 +81,6 @@
                 </OverflowToolbar>
             </headerToolbar>
                 <columns>
-                    <Column width="5rem">
-                        <header>
-                            <Text text="S No." />
-                        </header>
-                    </Column>
                     <Column>
                         <header>
                             <Text text="Product ID" />
@@ -135,7 +130,6 @@
                 <items>
                     <ColumnListItem type="Navigation">
                         <cells>
-                            <Text text="{productModel>SNo}" />
                             <Text text="{productModel>ProductID}" />
                             <Text text="{productModel>ProductName}" />
                             <Text text="{productModel>Category/CategoryName}" />

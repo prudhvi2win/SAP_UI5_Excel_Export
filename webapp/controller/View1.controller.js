@@ -10,7 +10,7 @@ sap.ui.define([
     "sap/m/MessageBox",
     "sap/ui/export/library",
     "sap/ui/export/EdmType",
-], (Controller, formatter, Filter, FilterOperator, messageToast, 
+], (Controller, formatter, Filter, FilterOperator, messageToast,
     Fragment, JSONModel, Spreadsheet, MessageBox, exportLibrary, EdmType) => {
     "use strict";
 
@@ -18,23 +18,26 @@ sap.ui.define([
         f: formatter,
         onInit() {
             // Get OData Model 
-            var oModel = this.getOwnerComponent().getModel(); 
+            var oModel = this.getOwnerComponent().getModel();
             // Get JSON Model
             var productModel = this.getOwnerComponent().getModel("productModel");
+
+            var oTable = this.getView().byId("idProductTable");
+            oTable.setBusy(true);
 
             oModel.read("/Products", {
                 urlParameters: {
                     "$expand": "Category,Supplier"
                 },
-                success: function (oData) {
-                        // console.log(oData.results);
-                        // Add serial number (SNo) to each product in the JSON model
-                        if (oData && Array.isArray(oData.results)) {
-                            oData.results.forEach(function (item, index) {
-                                item.SNo = index + 1;
-                            });
-                        }
-                        productModel.setData(oData);
+                success: (oData) => {
+                    productModel.setData(oData);
+                    this.getView().byId("idProductTable").setBusy(false);
+                },
+                error: (oError) => {
+                    this.getView().setBusy(false);
+                    sap.m.MessageBox.error(
+                        "Failed to load products. Please try again."
+                    );
                 }
             });
         },
@@ -95,79 +98,10 @@ sap.ui.define([
             // var sProductID = oContext.getProperty("ProductID");
             var oContext = oEvent.getParameter("listItem").getBindingContext("productModel");
             var sProductID = oContext.getProperty("ProductID");
-            
+
             var oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("RouteView2", {
                 productID: sProductID
-            });
-        },
-
-        onOpenCreateDialog: function () {
-            var oView = this.getView();
-
-            // Create a clean, default data structure for different scenarios
-            var oDefaultDraftData = {
-                ProductName: "",
-                UnitPrice: "0.00",
-                UnitsInStock: 0,
-                Discontinued: false
-            };
-
-            // Set up our local two-way buffer model
-            var oDraftModel = new JSONModel(oDefaultDraftData);
-            oView.setModel(oDraftModel, "draft");
-
-            if (!this._pCreateDialog) {
-                this._pCreateDialog = Fragment.load({
-                    id: oView.getId(),
-                    name: "com.practice.northwind.view.fragments.CreateProductDialog",
-                    controller: this
-                }).then(function (oDialog) {
-                    oView.addDependent(oDialog);
-                    return oDialog;
-                });
-            }
-
-            this._pCreateDialog.then(function (oDialog) {
-                oDialog.open();
-            });
-        },
-
-        onCloseCreateDialog: function () {
-            this.byId("idCreateProductDialog").close();
-        },
-
-        // 2. EXTRACT AND SUBMIT PAYLOAD AT ANY TIME
-        onSaveNewProduct: function () {
-            var oView = this.getView();
-            var oODataModel = oView.getModel(); // Primary OData Service Channel
-
-            // No manual scraping needed! Two-way binding did the work.
-            var oPayload = oView.getModel("draft").getData();
-
-            // Quick Data Validation Scenario
-            if (!oPayload.ProductName || oPayload.ProductName.trim() === "") {
-                MessageBox.error("Product Name is an absolute requirement.");
-                return;
-            }
-
-            // Clean data types for OData integrity
-            oPayload.UnitPrice = parseFloat(oPayload.UnitPrice).toFixed(4);
-            oPayload.UnitsInStock = parseInt(oPayload.UnitsInStock, 10);
-
-            oView.byId("idCreateProductDialog").setBusy(true);
-
-            // Execute the Create OData Network Event
-            oODataModel.create("/Products", oPayload, {
-                success: function (oData, response) {
-                    oView.byId("idCreateProductDialog").setBusy(false);
-                    this.onCloseCreateDialog();
-                    MessageToast.show("New product registered successfully!");
-                }.bind(this),
-                error: function (oError) {
-                    oView.byId("idCreateProductDialog").setBusy(false);
-                    MessageBox.error("OData persistency failure: " + oError.message);
-                }.bind(this)
             });
         },
 
@@ -196,8 +130,8 @@ sap.ui.define([
 
             // Trigger the export and handle the promise result
             oSheet.build()
-                .then(() => sap.m.MessageToast.show("Export successful!"))
-                .catch((sErr) => sap.m.MessageToast.show("Export failed: " + sErr))
+                .then(() => MessageToast.show("Export successful!"))
+                .catch((sErr) => MessageToast.show("Export failed: " + sErr))
                 .finally(() => oSheet.destroy());
         },
 
@@ -245,7 +179,7 @@ sap.ui.define([
                 }
             ];
         },
-        onAdd: function(){
+        onAdd: function () {
             this.getOwnerComponent().getRouter().navTo("RouteView2", {
                 productID: "add"
             });

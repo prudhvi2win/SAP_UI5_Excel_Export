@@ -5,7 +5,7 @@
 
     <VBox class="sapUiMediumMargin">
 
-        <Panel headerText="Create Product" expandable="false" >
+        <Panel headerText="Create Product" expandable="false" id="idAddPanel">
 
             <content>
                 <f:SimpleForm
@@ -23,7 +23,8 @@
                         <Label text="Select Customer" />
                         <ComboBox id="idCustomer"
                                 change="onCustomerChange"
-                                items="{/Customers}" value="{draft>/CustomerName}">
+                                items="{/Customers}"
+                                selectedKey="{draft>/CustomerID}">
                             <core:Item key="{CustomerID}" text="{CompanyName}" />
                         </ComboBox>
 
@@ -41,8 +42,20 @@
 
                         <Label text="Discontinued Status" />
                         <CheckBox
-                            selected="{draft>/Discontinued}"
-                            text="Mark as Discontinued immediately" />
+                            selected="{= ${draft>/Discontinued} === true || ${draft>/Discontinued} === 'Yes' }"
+                            text="{= ${draft>/Discontinued} === true || ${draft>/Discontinued} === 'Yes' ? 'Yes' : 'No' }" />
+
+                        <Label text="Quantity Per Unit" />
+                        <Input value="{draft>/QuantityPerUnit}" />
+
+                        <Label text="Units In Stock" />
+                        <Input value="{draft>/UnitsInStock} cases" />
+
+                        <Label text="Units On Order" />
+                        <Input value="{draft>/UnitsOnOrder} cases" />
+                    
+                        <Label text="Reorder Level" />
+                        <Input value="{draft>/ReorderLevel}" />
 
                     </f:content>
 

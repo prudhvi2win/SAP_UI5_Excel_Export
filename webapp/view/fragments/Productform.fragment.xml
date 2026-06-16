@@ -1,0 +1,135 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form"
+    xmlns="sap.m">
+
+    <!--
+        Reusable ProductForm fragment.
+        Driven by viewModel>/mode: "view" | "edit" | "create"
+        All fields bind to draft model for non-destructive two-way editing.
+    -->
+
+    <VBox class="sapUiResponsiveMargin">
+
+        <!-- Status Banner: shows product state prominently -->
+        <ObjectHeader
+            id="idProductHeader"
+            title="{draft>/ProductName}"
+            number="{draft>/UnitPrice}"
+            numberUnit="USD"
+            numberState="{path:'draft>/Discontinued', formatter:'.f.colorDiscontinued'}"
+            visible="{= ${viewModel>/mode} === 'view' }">
+            <statuses>
+                <ObjectStatus
+                    text="{= ${draft>/Discontinued} ? 'Discontinued' : 'Active'}"
+                    state="{path:'draft>/Discontinued', formatter:'.f.colorDiscontinued'}"
+                    inverted="true" />
+                <ObjectStatus
+                    text="Units in Stock: {draft>/UnitsInStock}"
+                    state="{= ${draft>/UnitsInStock} === 0 ? 'Error' : (${draft>/UnitsInStock} &lt;= ${draft>/ReorderLevel} ? 'Warning' : 'Success') }" />
+            </statuses>
+        </ObjectHeader>
+
+        <!-- Main Form -->
+        <form:SimpleForm
+            id="idProductForm"
+            editable="{= ${viewModel>/mode} !== 'view' }"
+            layout="ResponsiveGridLayout"
+            title="Product Details"
+            labelSpanL="4" labelSpanM="4"
+            emptySpanL="0" emptySpanM="0"
+            columnsL="2" columnsM="2">
+
+            <form:content>
+
+                <!-- === IDENTIFICATION === -->
+                <core:Title text="Identification" />
+
+                <Label text="Product ID" />
+                <Text text="{draft>/ProductID}" />
+
+                <Label text="Product Name" />
+                <Input id="idFormProductName"
+                       value="{draft>/ProductName}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       placeholder="Enter product name"
+                       required="true"
+                       valueLiveUpdate="true" />
+
+                <Label text="Category" />
+                <Select id="idFormCategory"
+                        selectedKey="{draft>/CategoryID}"
+                        enabled="{= ${viewModel>/mode} !== 'view' }"
+                        items="{path: '/Categories', templateShareable: false}">
+                    <core:Item key="{CategoryID}" text="{CategoryName}" />
+                </Select>
+
+                <Label text="Supplier" />
+                <Select id="idFormSupplier"
+                        selectedKey="{draft>/SupplierID}"
+                        enabled="{= ${viewModel>/mode} !== 'view' }"
+                        items="{path: '/Suppliers', templateShareable: false}">
+                    <core:Item key="{SupplierID}" text="{CompanyName}" />
+                </Select>
+
+                <!-- === PRICING & STOCK === -->
+                <core:Title text="Pricing &amp; Inventory" />
+
+                <Label text="Unit Price (USD)" />
+                <Input id="idFormUnitPrice"
+                       value="{draft>/UnitPrice}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       type="Number"
+                       placeholder="0.00" />
+
+                <Label text="Quantity Per Unit" />
+                <Input id="idFormQtyPerUnit"
+                       value="{draft>/QuantityPerUnit}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       placeholder="e.g. 10 boxes x 20 bags" />
+
+                <Label text="Units In Stock" />
+                <Input id="idFormUnitsInStock"
+                       value="{draft>/UnitsInStock}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       type="Number"
+                       placeholder="0" />
+
+                <Label text="Units On Order" />
+                <Input id="idFormUnitsOnOrder"
+                       value="{draft>/UnitsOnOrder}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       type="Number"
+                       placeholder="0" />
+
+                <Label text="Reorder Level" />
+                <Input id="idFormReorderLevel"
+                       value="{draft>/ReorderLevel}"
+                       editable="{= ${viewModel>/mode} !== 'view' }"
+                       type="Number"
+                       placeholder="0" />
+
+                <!-- === STATUS === -->
+                <core:Title text="Status" />
+
+                <Label text="Discontinued" />
+                <!-- View mode: read-only status chip -->
+                <ObjectStatus
+                    text="{= ${draft>/Discontinued} ? 'Yes — Product discontinued' : 'No — Actively sold'}"
+                    state="{path:'draft>/Discontinued', formatter:'.f.colorDiscontinued'}"
+                    inverted="true"
+                    visible="{= ${viewModel>/mode} === 'view' }" />
+                <!-- Edit/Create mode: toggle switch -->
+                <Switch id="idFormDiscontinued"
+                        state="{draft>/Discontinued}"
+                        enabled="{= ${viewModel>/mode} !== 'view' }"
+                        visible="{= ${viewModel>/mode} !== 'view' }"
+                        customTextOn="Yes"
+                        customTextOff="No" />
+
+            </form:content>
+        </form:SimpleForm>
+
+    </VBox>
+
+</core:FragmentDefinition>
